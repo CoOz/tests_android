@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">TrendingTopic</string>
+
+    <string name="button_start">Start service</string>
+    <string name="button_stop">Stop service</string>
+    <string name="text_start">Service enabled</string>
+    <string name="text_stop">Service disabled</string>
+
+    <string name="notification_title">New trending topic !</string>
+    <string name="notification_content"> is the new trending topic on Twitter !</string>
 </resources>
