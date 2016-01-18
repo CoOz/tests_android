@@ -36,11 +36,11 @@ public class TTService extends Service {
         PendingIntent pendingIntentAlarmReceiver = PendingIntent.getBroadcast(this, 0, intentAlarmReceiver, 0);
         // lancer l'intent à interval régulier (toutes les 15min)
         ((AlarmManager) getSystemService(Context.ALARM_SERVICE))
-                .setInexactRepeating(AlarmManager.RTC,
+                .setInexactRepeating(
+                        AlarmManager.RTC,
                         System.currentTimeMillis(),
-
-                        // quelques secondes pour le debug
-                        10000, //AlarmManager.INTERVAL_FIFTEEN_MINUTES,
+                        AlarmManager.INTERVAL_FIFTEEN_MINUTES,
+                        //10000, // 10sec, pour debug
                         pendingIntentAlarmReceiver);
 
 
