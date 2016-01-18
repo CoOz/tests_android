@@ -12,8 +12,9 @@ public final class BootCompleteReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.d("DEBUG", "BOOT_COMPLETE received");
-        // démarrer le service
+        Log.d("DEBUG TT", "BOOT_COMPLETE received");
+
+        // démarrer TTservice
         context.startService(new Intent(context, TTService.class));
     }
 

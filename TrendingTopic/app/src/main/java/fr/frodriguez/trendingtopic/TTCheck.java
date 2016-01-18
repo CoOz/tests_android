@@ -22,7 +22,7 @@ import twitter4j.conf.ConfigurationBuilder;
 public class TTCheck {
 
     public static void check(Context context) {
-        Log.d("DEBUG", "checking TT");
+        Log.d("DEBUG TT", "checking TT");
 
         // service d'authentification pour utiliser l'api twitter
         ConfigurationBuilder cb = new ConfigurationBuilder();
@@ -41,7 +41,7 @@ public class TTCheck {
 
             // si le 1er TT est dispo
             if(trends[0] != null) {
-                Log.d("DEBUG", "First TT found");
+                Log.d("DEBUG TT", "First TT found");
 
                 //TODO stocker le dernier TT et vérifier avant notification
 
@@ -51,7 +51,7 @@ public class TTCheck {
 
         } catch (TwitterException e) {
             e.printStackTrace();
-            Log.w("ERROR", "Network or Twitter services are unavailable");
+            Log.w("ERROR TT", "Network or Twitter services are unavailable");
         }
     }
 
@@ -70,7 +70,7 @@ public class TTCheck {
                 .setAutoCancel(true)
                 .setSmallIcon(R.drawable.notification_twitter)
                 .setContentTitle(context.getResources().getString(R.string.notification_title))
-                .setContentText(name + context.getResources().getString(R.string.notification_content))
+                .setContentText(name + " " + context.getResources().getString(R.string.notification_content))
                 .setContentIntent(PendingIntent.getActivity(context, 0, intent, 0))
                 // activer la sonnerie par défaut
                 .setDefaults(Notification.DEFAULT_SOUND);

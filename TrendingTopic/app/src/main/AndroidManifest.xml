@@ -36,6 +36,9 @@
         <service android:name=".TTService">
         </service>
 
+        <receiver android:name=".TTAlarmReceiver">
+        </receiver>
+
     </application>
 
 </manifest>

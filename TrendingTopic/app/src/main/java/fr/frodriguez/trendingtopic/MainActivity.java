@@ -16,14 +16,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onClickStart(View view) {
-        Log.d("DEBUG", "Button start click");
         this.startService(new Intent(this, TTService.class));
+
         Toast.makeText(this, getResources().getString(R.string.text_start), Toast.LENGTH_SHORT).show();
     }
 
     public void onClickStop(View view) {
-        Log.d("DEBUG", "Button stop click");
         this.stopService(new Intent(this, TTService.class));
+
         Toast.makeText(this, getResources().getString(R.string.text_stop), Toast.LENGTH_SHORT).show();
     }
 }
