@@ -15,13 +15,13 @@ import android.util.Log;
 public class TTService extends Service {
 
     public void onCreate() {
-        Log.d("DEBUG TT", "Create service");
+        Log.d(Utils.LOG_TAG, "TTService onCreate");
     }
 
     public void onDestroy() {
-        Log.d("DEBUG TT", "Destroy service");
+        Log.d(Utils.LOG_TAG, "TTService onDestroy");
 
-        // annuler les alarmes, si le service est arrêté par le système ou l'utilisateur
+        // cancel all alarms
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         Intent intentAlarmReceiver = new Intent(this, TTAlarmReceiver.class);
         PendingIntent pendingIntentAlarmReceiver = PendingIntent.getBroadcast(this, 0, intentAlarmReceiver, 0);
@@ -29,22 +29,20 @@ public class TTService extends Service {
     }
 
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.d("DEBUG TT", "Service startCommand");
+        Log.d(Utils.LOG_TAG, "TTService startCommand");
 
-        // récupérer l'alarmReceiver qui s'occupera d'appeler périodiquement l'AlarmReceiver
         Intent intentAlarmReceiver = new Intent(this, TTAlarmReceiver.class);
         PendingIntent pendingIntentAlarmReceiver = PendingIntent.getBroadcast(this, 0, intentAlarmReceiver, 0);
-        // lancer l'intent à interval régulier (toutes les 15min)
+        // broadcast the intent every 15min
         ((AlarmManager) getSystemService(Context.ALARM_SERVICE))
                 .setInexactRepeating(
                         AlarmManager.RTC,
                         System.currentTimeMillis(),
                         AlarmManager.INTERVAL_FIFTEEN_MINUTES,
-                        //10000, // 10sec, pour debug
+                        //10000, // 10sec, for debug
                         pendingIntentAlarmReceiver);
 
-
-        // permet de redémarrer le service s'il est fermé par le système
+        // restart the service if closed by system
         return START_STICKY;
     }
 

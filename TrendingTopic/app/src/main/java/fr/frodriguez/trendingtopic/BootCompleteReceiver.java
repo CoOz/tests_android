@@ -3,6 +3,7 @@ package fr.frodriguez.trendingtopic;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.util.Log;
 
 /**
@@ -12,10 +13,13 @@ public final class BootCompleteReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.d("DEBUG TT", "BOOT_COMPLETE received");
+        Log.d(Utils.LOG_TAG, "BOOT_COMPLETE received");
 
-        // démarrer TTservice
-        context.startService(new Intent(context, TTService.class));
+        // start the TTService if enabled
+        SharedPreferences sharedPreferences = context.getSharedPreferences(Utils.SHARED_PREF, Context.MODE_PRIVATE);
+        if(sharedPreferences.getBoolean(Utils.SHARED_PREF_BOOT_ENABLED, Utils.SHARED_PREF_BOOT_ENABLED_DEFAULT)) {
+            context.startService(new Intent(context, TTService.class));
+        }
     }
 
 }

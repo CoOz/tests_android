@@ -22,25 +22,15 @@ import twitter4j.conf.ConfigurationBuilder;
  */
 public class TTAlarmReceiver extends BroadcastReceiver {
 
-    private static String SHARED_PREFERENCES_FILE_KEY = "fr.frodriguez.trendingtopic.lastTT";
-    private static String SHARED_PREFERENCES_KEY = "lastTT";
-    private static int NOTIFICATION_ID = 0;
-    private static int TWITTER_WOEID_WORLD = 1;
-    private static int TWITTER_WOEID_FRANCE = 23424819;
-
-
     @Override
     public void onReceive(final Context context, Intent intent) {
-        Log.d("DEBUG TT", "AlarmManager onReceive");
+        Log.d(Utils.LOG_TAG, "AlarmManager onReceive");
 
-        final Context contextThread = context;
-
-        // thread pour l'accès à internet
+        // thread because of internet access
         Thread t = new Thread(new Runnable() {
             @Override
             public void run() {
-
-                // service d'authentification OAUTH pour utiliser l'api twitter
+                // authentification to use twitter api
                 ConfigurationBuilder cb = new ConfigurationBuilder();
                 cb.setDebugEnabled(true)
                         .setOAuthConsumerKey("Zn4nPDBCy6AQctonRzVGlAsHj")
@@ -50,71 +40,59 @@ public class TTAlarmReceiver extends BroadcastReceiver {
                 Twitter twitter = new TwitterFactory(cb.build()).getInstance();
 
                 try {
-                    // chercher les TT, 1 = monde entier
-                    Trend[] trends = twitter.getPlaceTrends(TWITTER_WOEID_WORLD).getTrends();
+                    SharedPreferences sharedPreferences = context.getSharedPreferences(Utils.SHARED_PREF, Context.MODE_PRIVATE);
 
-                    // si le 1er TT est dispo
+                    Trend[] trends = twitter.getPlaceTrends(sharedPreferences.getInt(Utils.SHARED_PREF_WOEID, Utils.SHARED_PREF_WOEID_DEFAULT)).getTrends();
+
+                    // if the 1st TT is available
                     if (trends[0] != null) {
-                        Log.d("DEBUG TT", "First TT found");
+                        Log.d(Utils.LOG_TAG, "First TT found");
 
                         String trendName = trends[0].getName(),
                                 trendURL = trends[0].getURL();
 
-                        // récupérer le précédent TT notifié
-                        SharedPreferences sharedPreferences = contextThread.getSharedPreferences(SHARED_PREFERENCES_FILE_KEY, Context.MODE_PRIVATE);
-                        String lastTT = sharedPreferences.getString(SHARED_PREFERENCES_KEY, null);
+                        // get the last notified TT
+                        String lastTT = sharedPreferences.getString(Utils.SHARED_PREF_TT, null);
 
-                        // si aucun TT n'a été vu ou qu'il est différent du précédent sauvegardé
+                        // if no TT exists or if is not the last notified
                         if(lastTT == null || !lastTT.equals(trendName)) {
-                            Log.d("DEBUG TT", "New TT, saving in SharedPreferences");
-                            // sauvegarder ce TT
+                            Log.d(Utils.LOG_TAG, "Saving the new TT in SharedPreferences");
+                            // save the TT
                             SharedPreferences.Editor sharedPreferencesEditor = sharedPreferences.edit();
-                            sharedPreferencesEditor.putString(SHARED_PREFERENCES_KEY, trendName);
+                            sharedPreferencesEditor.putString(Utils.SHARED_PREF_TT, trendName);
                             sharedPreferencesEditor.commit();
 
-                            // lancer la notification
-                            notify(contextThread, trendName, trendURL);
+                            // notify the user
+                            notify(context, trendName, trendURL);
                         }
-                        // sinon, il s'agit du précédent TT notifié
                         else {
-                            Log.d("DEBUG TT", "TT already notified");
+                            Log.d(Utils.LOG_TAG, "TT already notified");
                         }
                     }
-
                 } catch (TwitterException e) {
-                    e.printStackTrace();
-                    Log.w("ERROR TT", "Network or Twitter services are unavailable");
+                    Log.e(Utils.LOG_TAG, "Network or Twitter services are unavailable", e);
                 }
             }
 
             private void notify(Context contextNotifiy, String name, String url) {
-                // ouvrir le navigateur sur l'url du TT
+                // open the browser on the TT url
                 Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
 
-                // paramétrage de la notification
+                // set up the notification
                 NotificationCompat.Builder nBuilder = new NotificationCompat.Builder(contextNotifiy)
                         .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                        // visible partout (même sur lockscreen pour 5.x)
                         .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
-                        // supprimée lorsque l'on clique dessus
-                        .setAutoCancel(true)
-                        // icone
+                        .setAutoCancel(true) // delete when touch
                         .setSmallIcon(R.drawable.notification_twitter)
-                        // contenu
                         .setContentTitle(contextNotifiy.getResources().getString(R.string.notification_title))
                         .setContentText(name + " " + contextNotifiy.getResources().getString(R.string.notification_content))
-                        // lien navigateur
-                        .setContentIntent(PendingIntent.getActivity(contextNotifiy, 0, intent, 0))
-                        // activer la sonnerie par défaut
+                        .setContentIntent(PendingIntent.getActivity(contextNotifiy, 0, intent, 0)) // browser link
                         .setSound(Uri.parse("android.resource://"+context.getPackageName()+"/"+R.raw.notif_sound))
                         //.setDefaults(Notification.DEFAULT_SOUND);
                 ;
-
-                // lancer la notification
                 ((NotificationManager) contextNotifiy.getSystemService(Context.NOTIFICATION_SERVICE))
-                        .notify(NOTIFICATION_ID, nBuilder.build());
+                        .notify(Utils.NOTIFICATION_ID, nBuilder.build());
             }
-
         });
         t.start();
     }
