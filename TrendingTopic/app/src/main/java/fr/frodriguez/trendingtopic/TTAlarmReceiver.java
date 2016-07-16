@@ -11,6 +11,13 @@ import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
 import twitter4j.Trend;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
@@ -42,24 +49,37 @@ public class TTAlarmReceiver extends BroadcastReceiver {
                 try {
                     SharedPreferences sharedPreferences = context.getSharedPreferences(Utils.SHARED_PREF, Context.MODE_PRIVATE);
 
-                    Trend[] trends = twitter.getPlaceTrends(sharedPreferences.getInt(Utils.SHARED_PREF_WOEID, Utils.SHARED_PREF_WOEID_DEFAULT)).getTrends();
+                    // get TTs from woeid
+                    int woeid = sharedPreferences.getInt(Utils.SHARED_PREF_WOEID, Utils.SHARED_PREF_WOEID_DEFAULT);
+                    Trend[] trends = twitter.getPlaceTrends(woeid).getTrends();
 
                     // if the 1st TT is available
                     if (trends[0] != null) {
-                        Log.d(Utils.LOG_TAG, "First TT found");
+                        Log.d(Utils.LOG_TAG, "TT found for woeid " + woeid);
 
                         String trendName = trends[0].getName(),
                                 trendURL = trends[0].getURL();
 
-                        // get the last notified TT
-                        String lastTT = sharedPreferences.getString(Utils.SHARED_PREF_TT, null);
+                        // get already notified TTs
+                        String TTStr = sharedPreferences.getString(Utils.SHARED_PREF_TT, Utils.SHARED_PREF_TT_DEFAULT);
+                        JSONObject TTJson;
+                        if(TTStr.equals("")) {
+                            TTJson = new JSONObject();
+                        } else {
+                            TTJson = new JSONObject(TTStr);
+                        }
+                        // get current date
+                        Calendar calendar = Calendar.getInstance();
+                        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+                        String today = dateFormat.format(calendar.getTime());
 
-                        // if no TT exists or if is not the last notified
-                        if(lastTT == null || !lastTT.equals(trendName)) {
-                            Log.d(Utils.LOG_TAG, "Saving the new TT in SharedPreferences");
+                        // if the TT is not already notified of if it was not notified today
+                        if( !TTJson.has(trendName) || !TTJson.getString(trendName).equals(today) ) {
                             // save the TT
+                            TTJson.put(trendName, today);
+                            Log.d(Utils.LOG_TAG, "Saving the new TT in SharedPreferences");
                             SharedPreferences.Editor sharedPreferencesEditor = sharedPreferences.edit();
-                            sharedPreferencesEditor.putString(Utils.SHARED_PREF_TT, trendName);
+                            sharedPreferencesEditor.putString(Utils.SHARED_PREF_TT, TTJson.toString());
                             sharedPreferencesEditor.commit();
 
                             // notify the user
@@ -68,9 +88,12 @@ public class TTAlarmReceiver extends BroadcastReceiver {
                         else {
                             Log.d(Utils.LOG_TAG, "TT already notified");
                         }
+                        Log.d(Utils.LOG_TAG, "SharedPreferences state: " + TTJson.toString());
                     }
                 } catch (TwitterException e) {
                     Log.e(Utils.LOG_TAG, "Network or Twitter services are unavailable", e);
+                } catch (JSONException e) {
+                    Log.e(Utils.LOG_TAG, "Error parsing JSON data", e);
                 }
             }
 

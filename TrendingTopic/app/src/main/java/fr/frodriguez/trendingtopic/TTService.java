@@ -38,8 +38,8 @@ public class TTService extends Service {
                 .setInexactRepeating(
                         AlarmManager.RTC,
                         System.currentTimeMillis(),
-                        AlarmManager.INTERVAL_FIFTEEN_MINUTES,
-                        //10000, // 10sec, for debug
+                        //AlarmManager.INTERVAL_FIFTEEN_MINUTES,
+                        10000, // 10sec, for debug
                         pendingIntentAlarmReceiver);
 
         // restart the service if closed by system

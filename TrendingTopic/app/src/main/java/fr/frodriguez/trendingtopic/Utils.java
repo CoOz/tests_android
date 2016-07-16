@@ -14,6 +14,7 @@ public class Utils {
 
     protected static String  SHARED_PREF = "fr.frodriguez.trendingtopic.lastTT";
     protected static String  SHARED_PREF_TT = "last_tt";
+    protected static String  SHARED_PREF_TT_DEFAULT = "";
     protected static String  SHARED_PREF_BOOT_ENABLED = "boot_enabled";
     protected static boolean SHARED_PREF_BOOT_ENABLED_DEFAULT = true;
     protected static String  SHARED_PREF_WOEID = "woeid";
