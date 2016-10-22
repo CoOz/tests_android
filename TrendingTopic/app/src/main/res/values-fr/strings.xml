@@ -1,10 +1,14 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+
     <string name="switchEnabledLabel">Service activé ?</string>
-    <string name="text_start">Service activé</string>
-    <string name="text_stop">Service désactivé</string>
-    <string name="spinnerLabel">Lieux du TT</string>
     <string name="switchBootLabel">Activer le service au démarrage ?</string>
+    <string name="spinnerLabel">Localisation du TT</string>
+
+    <string name="service_enabled">Service activé</string>
+    <string name="service_disabled">Service désactivé</string>
+    <string name="location_updated">Localisation mise à jour</string>
+
     <string name="notification_title">Nouveau trending topic !</string>
     <string name="notification_content">est le nouveau trending topic sur Twitter !</string>
 </resources>

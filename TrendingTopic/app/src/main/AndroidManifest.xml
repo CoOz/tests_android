@@ -4,9 +4,9 @@
     package="fr.frodriguez.trendingtopic">
 
 
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -22,22 +22,17 @@
             </intent-filter>
         </activity>
 
-        <!-- réception de l'évennement BOOT_COMPLETED -->
         <receiver
-            android:name=".BootCompleteReceiver"
-            android:enabled="true">
+            android:name=".TTReceiver"
+            android:enabled="true"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
-                <category android:name="android.intent.category.DEFAULT"/>
+                <action android:name="tt.intent.action.CHECK_TT" />
             </intent-filter>
         </receiver>
 
-        <service android:name=".TTService">
-        </service>
-
-        <receiver android:name=".TTAlarmReceiver">
-        </receiver>
+        <service android:name=".TTService" />
 
     </application>
-
 </manifest>
