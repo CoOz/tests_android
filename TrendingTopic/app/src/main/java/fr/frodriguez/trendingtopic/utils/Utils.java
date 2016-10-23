@@ -1,6 +1,7 @@
 package fr.frodriguez.trendingtopic.utils;
 
 import android.app.ActivityManager;
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -8,10 +9,8 @@ import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
-import fr.frodriguez.trendingtopic.R;
 import fr.frodriguez.trendingtopic.TTService;
 
 /**
@@ -24,13 +23,13 @@ public class Utils {
     public final static String TWITTER_WOEID_LABELS[] = {"World", "France", "US", "UK"};
     public final static int    TWITTER_WOEID_VALUES[] = {1, 23424819, 23424977, 23424975};
 
-    public final static String  SHARED_PREF                         = "fr.frodriguez.trendingtopic.lastTT";
-    public final static String  SHARED_PREF_TT                      = "last_tt";
-    public final static String  SHARED_PREF_TT_DEFAULT              = "";
-    public final static String  SHARED_PREF_BOOT_ENABLED            = "boot_enabled";
-    public final static boolean SHARED_PREF_BOOT_ENABLED_DEFAULT    = true;
-    public final static String  SHARED_PREF_WOEID                   = "woeid";
-    public final static int     SHARED_PREF_WOEID_DEFAULT           = TWITTER_WOEID_VALUES[0];
+    public final static String  SHARED_PREFERENCES         = "fr.frodriguez.trendingtopic.lastTT";
+    public final static String  SP_TT                      = "last_tt";
+    public final static String  SP_TT_DEFAULT              = "";
+    public final static String  SP_BOOT_ENABLED            = "boot_enabled";
+    public final static boolean SP_BOOT_ENABLED_DEFAULT    = true;
+    public final static String  SP_WOEID                   = "woeid";
+    public final static int     SP_WOEID_DEFAULT           = TWITTER_WOEID_VALUES[0];
 
     public final static int NOTIFICATION_ID = 0;
 
@@ -78,9 +77,9 @@ public class Utils {
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
 
         // set up the notification
-        NotificationCompat.Builder nBuilder = new NotificationCompat.Builder(context)
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+        Notification.Builder nBuilder = new Notification.Builder(context)
+                .setPriority(Notification.PRIORITY_DEFAULT)
+                .setVisibility(Notification.VISIBILITY_PUBLIC)
                 .setAutoCancel(true) // delete when touch
                 .setSmallIcon(icon)
                 .setContentTitle(title)

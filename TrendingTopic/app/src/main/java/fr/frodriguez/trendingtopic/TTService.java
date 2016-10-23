@@ -6,10 +6,7 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
-import android.provider.Settings;
 import android.support.annotation.Nullable;
-
-import java.util.Calendar;
 
 import fr.frodriguez.trendingtopic.utils.Logger;
 import fr.frodriguez.trendingtopic.utils.TTIntents;
@@ -62,5 +59,4 @@ public class TTService extends Service {
     public IBinder onBind(Intent intent) {
         return null;
     }
-
 }

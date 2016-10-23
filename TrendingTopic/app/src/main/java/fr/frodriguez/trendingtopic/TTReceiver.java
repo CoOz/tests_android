@@ -39,8 +39,8 @@ public final class TTReceiver extends BroadcastReceiver {
 
         // on boot, start the TTService if enabled
         if(action.equals(Intent.ACTION_BOOT_COMPLETED)) {
-            SharedPreferences sharedPreferences = context.getSharedPreferences(Utils.SHARED_PREF, Context.MODE_PRIVATE);
-            if(sharedPreferences.getBoolean(Utils.SHARED_PREF_BOOT_ENABLED, Utils.SHARED_PREF_BOOT_ENABLED_DEFAULT)) {
+            SharedPreferences sp = context.getSharedPreferences(Utils.SHARED_PREFERENCES, Context.MODE_PRIVATE);
+            if(sp.getBoolean(Utils.SP_BOOT_ENABLED, Utils.SP_BOOT_ENABLED_DEFAULT)) {
                 context.startService(new Intent(context, TTService.class));
             }
         }
@@ -71,10 +71,10 @@ public final class TTReceiver extends BroadcastReceiver {
                 Twitter twitter = new TwitterFactory(cb.build()).getInstance();
 
                 try {
-                    SharedPreferences sharedPreferences = context.getSharedPreferences(Utils.SHARED_PREF, Context.MODE_PRIVATE);
+                    SharedPreferences sp = context.getSharedPreferences(Utils.SHARED_PREFERENCES, Context.MODE_PRIVATE);
 
                     // get TTs from woeid
-                    int woeid = sharedPreferences.getInt(Utils.SHARED_PREF_WOEID, Utils.SHARED_PREF_WOEID_DEFAULT);
+                    int woeid = sp.getInt(Utils.SP_WOEID, Utils.SP_WOEID_DEFAULT);
                     Trend[] trends = twitter.getPlaceTrends(woeid).getTrends();
 
                     // if the 1st TT is available
@@ -85,7 +85,7 @@ public final class TTReceiver extends BroadcastReceiver {
                                 trendURL = trends[0].getURL();
 
                         // get already notified TTs
-                        String TTStr = sharedPreferences.getString(Utils.SHARED_PREF_TT, Utils.SHARED_PREF_TT_DEFAULT);
+                        String TTStr = sp.getString(Utils.SP_TT, Utils.SP_TT_DEFAULT);
                         JSONObject TTJson;
                         if(TTStr.equals("")) {
                             TTJson = new JSONObject();
@@ -102,9 +102,9 @@ public final class TTReceiver extends BroadcastReceiver {
                             // save the TT
                             TTJson.put(trendName, today);
                             _log.d("Saving the new TT in SharedPreferences");
-                            SharedPreferences.Editor sharedPreferencesEditor = sharedPreferences.edit();
-                            sharedPreferencesEditor.putString(Utils.SHARED_PREF_TT, TTJson.toString());
-                            sharedPreferencesEditor.apply();
+                            SharedPreferences.Editor spe = sp.edit();
+                            spe.putString(Utils.SP_TT, TTJson.toString());
+                            spe.apply();
 
                             // notify the user
                             Utils.notify(
