@@ -11,4 +11,7 @@
 
     <string name="notification_title">Nouveau trending topic !</string>
     <string name="notification_content">est le nouveau trending topic sur Twitter !</string>
+    <string name="information">Seuls les nouveux trending topics pour aujourd\'hui seront notifiés</string>
+    <string name="clearButtonLabel">Supprimer les TT notifiés</string>
+    <string name="ttCleared">TT supprimés</string>
 </resources>

@@ -111,8 +111,8 @@ public final class TTReceiver extends BroadcastReceiver {
                                     context,
                                     Utils.NOTIFICATION_ID,
                                     R.drawable.notification_twitter,
-                                    context.getResources().getString(R.string.notification_title),
                                     trendURL,
+                                    context.getResources().getString(R.string.notification_title),
                                     trendName + " " + context.getResources().getString(R.string.notification_content),
                                     Uri.parse("android.resource://"+context.getPackageName()+"/"+R.raw.notif_sound)
                             );

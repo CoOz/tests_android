@@ -116,6 +116,17 @@ public class MainActivity extends Activity {
         spe.apply();
     }
 
+    /** Clear already notified TT */
+    public void onClickClearButton(View view) {
+        _log.d("Clear already notified TT");
+
+        SharedPreferences.Editor spe = _sp.edit();
+        spe.clear();
+        spe.apply();
+
+        Toast.makeText(this, getResources().getString(R.string.ttCleared), Toast.LENGTH_SHORT).show();
+    }
+
 
     private int easterEggCpt = 0;
     @SuppressWarnings("deprecation")

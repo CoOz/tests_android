@@ -74,21 +74,24 @@ public class Utils {
 
     public static  void notify(Context context, int id, int icon, String url, String title, String message, Uri sound) {
         // open the browser on the TT url
-        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW);
+        browserIntent.setData(Uri.parse(url));
+        PendingIntent browserPendingIntent = PendingIntent.getActivity(context, 0, browserIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         // set up the notification
         Notification.Builder nBuilder = new Notification.Builder(context)
                 .setPriority(Notification.PRIORITY_DEFAULT)
-                .setVisibility(Notification.VISIBILITY_PUBLIC)
                 .setAutoCancel(true) // delete when touch
                 .setSmallIcon(icon)
                 .setContentTitle(title)
                 .setContentText(message)
-                .setContentIntent(PendingIntent.getActivity(context, 0, intent, 0)) // browser link
-                .setSound(sound)
-                ;
-        ((NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE))
-                .notify(id, nBuilder.build());
+                .setContentIntent(browserPendingIntent) // browser link
+                .setSound(sound);
+        if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            nBuilder.setVisibility(Notification.VISIBILITY_PUBLIC);
+        }
+
+        ((NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE)).notify(id, nBuilder.build());
     }
 
 }

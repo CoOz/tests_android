@@ -4,6 +4,9 @@
     <string name="switchEnabledLabel">Service enabled ?</string>
     <string name="switchBootLabel">Enable service on device boot ?</string>
     <string name="spinnerLabel">TT location</string>
+    <string name="information">Only the new trending topics for today will be notified</string>
+    <string name="clearButtonLabel">Clear notified TT</string>
+    <string name="ttCleared">TT cleared</string>
 
     <string name="service_enabled">Service enabled</string>
     <string name="service_disabled">Service disabled</string>

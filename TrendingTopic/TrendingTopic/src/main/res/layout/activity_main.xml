@@ -56,6 +56,22 @@
         android:layout_alignBaseline="@+id/switchBootLabel"
         android:onClick="onClickBootSwitch" />
 
+    <TextView
+        android:id="@+id/informationTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/switchBootLabel"
+        android:layout_marginTop="100dp"
+        android:layout_marginBottom="30dp"
+        android:text="@string/information" />
+    <Button
+        android:id="@+id/clearButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/informationTextView"
+        android:text="@string/clearButtonLabel"
+        android:onClick="onClickClearButton"/>
+
 
     <TextView
         android:id="@+id/textViewVersion"
