@@ -18,6 +18,7 @@ import android.widget.Toast;
 import java.util.Arrays;
 
 import fr.frodriguez.trendingtopic.utils.Logger;
+import fr.frodriguez.trendingtopic.utils.Settings;
 import fr.frodriguez.trendingtopic.utils.Utils;
 
 /**
@@ -37,42 +38,44 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
 
         _log = new Logger(Utils.getAppName(this), this);
-        _sp = getSharedPreferences(Utils.SHARED_PREFERENCES, Context.MODE_PRIVATE);
+        _sp = getSharedPreferences(Settings.SHARED_PREFERENCES, Context.MODE_PRIVATE);
 
         // set app infos
         TextView textView = (TextView) findViewById(R.id.textViewVersion);
         textView.setText(Utils.getAppName(this) + " " + Utils.getAppVersion(this));
 
         // set switch values
-        ((Switch) findViewById(R.id.switchEnabledButton))
-                .setChecked(Utils.isServiceRunning(this));
-        ((Switch) findViewById(R.id.switchBootButton))
-                .setChecked(_sp.getBoolean(Utils.SP_BOOT_ENABLED, Utils.SP_BOOT_ENABLED_DEFAULT));
+        ((Switch) findViewById(R.id.switchDebug))
+                .setChecked(Utils.isDebugEnabled());
+        ((Switch) findViewById(R.id.switchEnabled))
+                .setChecked(Utils.isServiceRunning(this, TTService.class));
+        ((Switch) findViewById(R.id.switchBoot))
+                .setChecked(_sp.getBoolean(Settings.SP_BOOT_ENABLED, Settings.SP_BOOT_ENABLED_DEFAULT));
 
         // set the spinner values and the selected woeid
-        int selectedWoied = _sp.getInt(Utils.SP_WOEID, Utils.SP_WOEID_DEFAULT);
-        int indexWoied = Arrays.binarySearch(Utils.TWITTER_WOEID_VALUES, selectedWoied);
+        int selectedWoied = _sp.getInt(Settings.SP_WOEID, Settings.SP_WOEID_DEFAULT);
+        int indexWoied = Arrays.binarySearch(Settings.TWITTER_WOEID_VALUES, selectedWoied);
         Spinner spinner = (Spinner) findViewById(R.id.spinner);
         spinner.setSelection(indexWoied, false);
-        spinner.setAdapter(new ArrayAdapter<>(this, R.layout.support_simple_spinner_dropdown_item, Utils.TWITTER_WOEID_LABELS));
+        spinner.setAdapter(new ArrayAdapter<>(this, R.layout.support_simple_spinner_dropdown_item, Settings.TWITTER_WOEID_LABELS));
 
         // on location/woeid update
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 SharedPreferences.Editor spe = _sp.edit();
-                spe.putInt(Utils.SP_WOEID, Utils.TWITTER_WOEID_VALUES[position]);
+                spe.putInt(Settings.SP_WOEID, Settings.TWITTER_WOEID_VALUES[position]);
                 spe.apply();
 
                 // this method is called even on the spinner.setSelection instruction above
                 // the service don't have to be started in this case
                 if(!_initialized) {
                     _initialized = true;
-                    _log.d("Location initialized: " + Utils.TWITTER_WOEID_LABELS[position] + "/" + Utils.TWITTER_WOEID_VALUES[position]);
+                    _log.d("Location initialized: " + Settings.TWITTER_WOEID_LABELS[position] + "/" + Settings.TWITTER_WOEID_VALUES[position]);
                 } else {
                     _context.startService(new Intent(_context, TTService.class));
                     Toast.makeText(_context, getResources().getString(R.string.location_updated), Toast.LENGTH_SHORT).show();
-                    _log.d("Location selected: " + Utils.TWITTER_WOEID_LABELS[position] + "/" + Utils.TWITTER_WOEID_VALUES[position]);
+                    _log.d("Location selected: " + Settings.TWITTER_WOEID_LABELS[position] + "/" + Settings.TWITTER_WOEID_VALUES[position]);
                 }
             }
             @Override
@@ -112,7 +115,7 @@ public class MainActivity extends Activity {
         _log.d("Enabled on boot ? " + enabled);
 
         SharedPreferences.Editor spe = _sp.edit();
-        spe.putBoolean(Utils.SP_BOOT_ENABLED, enabled);
+        spe.putBoolean(Settings.SP_BOOT_ENABLED, enabled);
         spe.apply();
     }
 
@@ -126,6 +129,14 @@ public class MainActivity extends Activity {
 
         Toast.makeText(this, getResources().getString(R.string.ttCleared), Toast.LENGTH_SHORT).show();
     }
+
+    /** Enable or disable the debug mode */
+    public void onClickDebugSwitch(View view) {
+        boolean enabled = ((Switch)view).isChecked();
+        Utils.setDebugEnabled(enabled);
+        _log.d("Debug mode " + (enabled ? "enabled" : "disabled"));
+    }
+
 
 
     private int easterEggCpt = 0;

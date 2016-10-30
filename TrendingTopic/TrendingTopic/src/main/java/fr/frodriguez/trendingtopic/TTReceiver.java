@@ -14,7 +14,8 @@ import java.util.Calendar;
 import java.util.Locale;
 
 import fr.frodriguez.trendingtopic.utils.Logger;
-import fr.frodriguez.trendingtopic.utils.TTIntents;
+import fr.frodriguez.trendingtopic.utils.Intents;
+import fr.frodriguez.trendingtopic.utils.Settings;
 import fr.frodriguez.trendingtopic.utils.Utils;
 import twitter4j.Trend;
 import twitter4j.Twitter;
@@ -39,13 +40,13 @@ public final class TTReceiver extends BroadcastReceiver {
 
         // on boot, start the TTService if enabled
         if(action.equals(Intent.ACTION_BOOT_COMPLETED)) {
-            SharedPreferences sp = context.getSharedPreferences(Utils.SHARED_PREFERENCES, Context.MODE_PRIVATE);
-            if(sp.getBoolean(Utils.SP_BOOT_ENABLED, Utils.SP_BOOT_ENABLED_DEFAULT)) {
+            SharedPreferences sp = context.getSharedPreferences(Settings.SHARED_PREFERENCES, Context.MODE_PRIVATE);
+            if(sp.getBoolean(Settings.SP_BOOT_ENABLED, Settings.SP_BOOT_ENABLED_DEFAULT)) {
                 context.startService(new Intent(context, TTService.class));
             }
         }
         // on alarm received, check the new TTs
-        else if(action.equals(TTIntents.CHECK_TT)) {
+        else if(action.equals(Intents.CHECK_TT)) {
             checkTT(context);
         }
     }
@@ -64,17 +65,17 @@ public final class TTReceiver extends BroadcastReceiver {
                 // authentification to use twitter api
                 ConfigurationBuilder cb = new ConfigurationBuilder();
                 cb.setDebugEnabled(true)
-                        .setOAuthConsumerKey(Utils.OAUTH_CONSUMER_KEY)
-                        .setOAuthConsumerSecret(Utils.OAUTH_CONSUMER_SECRET)
-                        .setOAuthAccessToken(Utils.OAUTH_ACCESS_TOKEN)
-                        .setOAuthAccessTokenSecret(Utils.OAUTH_ACCESS_TOKEN_SECRET);
+                        .setOAuthConsumerKey(Settings.OAUTH_CONSUMER_KEY)
+                        .setOAuthConsumerSecret(Settings.OAUTH_CONSUMER_SECRET)
+                        .setOAuthAccessToken(Settings.OAUTH_ACCESS_TOKEN)
+                        .setOAuthAccessTokenSecret(Settings.OAUTH_ACCESS_TOKEN_SECRET);
                 Twitter twitter = new TwitterFactory(cb.build()).getInstance();
 
                 try {
-                    SharedPreferences sp = context.getSharedPreferences(Utils.SHARED_PREFERENCES, Context.MODE_PRIVATE);
+                    SharedPreferences sp = context.getSharedPreferences(Settings.SHARED_PREFERENCES, Context.MODE_PRIVATE);
 
                     // get TTs from woeid
-                    int woeid = sp.getInt(Utils.SP_WOEID, Utils.SP_WOEID_DEFAULT);
+                    int woeid = sp.getInt(Settings.SP_WOEID, Settings.SP_WOEID_DEFAULT);
                     Trend[] trends = twitter.getPlaceTrends(woeid).getTrends();
 
                     // if the 1st TT is available
@@ -85,7 +86,7 @@ public final class TTReceiver extends BroadcastReceiver {
                                 trendURL = trends[0].getURL();
 
                         // get already notified TTs
-                        String TTStr = sp.getString(Utils.SP_TT, Utils.SP_TT_DEFAULT);
+                        String TTStr = sp.getString(Settings.SP_TT, Settings.SP_TT_DEFAULT);
                         JSONObject TTJson;
                         if(TTStr.equals("")) {
                             TTJson = new JSONObject();
@@ -103,13 +104,13 @@ public final class TTReceiver extends BroadcastReceiver {
                             TTJson.put(trendName, today);
                             _log.d("Saving the new TT in SharedPreferences");
                             SharedPreferences.Editor spe = sp.edit();
-                            spe.putString(Utils.SP_TT, TTJson.toString());
+                            spe.putString(Settings.SP_TT, TTJson.toString());
                             spe.apply();
 
                             // notify the user
                             Utils.notify(
                                     context,
-                                    Utils.NOTIFICATION_ID,
+                                    Settings.NOTIFICATION_ID,
                                     R.drawable.notification_twitter,
                                     trendURL,
                                     context.getResources().getString(R.string.notification_title),

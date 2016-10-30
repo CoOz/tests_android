@@ -13,12 +13,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="30dp"
+        android:layout_marginEnd="30dp"
         android:text="@string/switchEnabledLabel" />
     <Switch
-        android:id="@+id/switchEnabledButton"
+        android:id="@+id/switchEnabled"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="30dp"
         android:layout_toEndOf="@id/switchEnabledLabel"
         android:layout_alignBaseline="@+id/switchEnabledLabel"
         android:onClick="onClickEnabledSwitch" />
@@ -30,12 +30,12 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/switchEnabledLabel"
         android:layout_marginBottom="30dp"
+        android:layout_marginEnd="30dp"
         android:text="@string/spinnerLabel" />
     <Spinner
         android:id="@+id/spinner"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="30dp"
         android:layout_toEndOf="@id/spinnerLabel"
         android:layout_alignBaseline="@+id/spinnerLabel" />
 
@@ -46,22 +46,23 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/spinnerLabel"
         android:layout_marginBottom="30dp"
+        android:layout_marginEnd="30dp"
         android:text="@string/switchBootLabel" />
     <Switch
-        android:id="@+id/switchBootButton"
+        android:id="@+id/switchBoot"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="30dp"
         android:layout_toEndOf="@+id/switchBootLabel"
         android:layout_alignBaseline="@+id/switchBootLabel"
         android:onClick="onClickBootSwitch" />
+
 
     <TextView
         android:id="@+id/informationTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/switchBootLabel"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="30dp"
         android:layout_marginBottom="30dp"
         android:text="@string/information" />
     <Button
@@ -71,6 +72,24 @@
         android:layout_below="@id/informationTextView"
         android:text="@string/clearButtonLabel"
         android:onClick="onClickClearButton"/>
+
+
+    <TextView
+        android:id="@+id/switchDebugLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/clearButton"
+        android:layout_marginTop="50dp"
+        android:layout_marginBottom="30dp"
+        android:layout_marginEnd="30dp"
+        android:text="@string/switchDebugLabel" />
+    <Switch
+        android:id="@+id/switchDebug"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@+id/switchDebugLabel"
+        android:layout_alignBaseline="@+id/switchDebugLabel"
+        android:onClick="onClickDebugSwitch" />
 
 
     <TextView

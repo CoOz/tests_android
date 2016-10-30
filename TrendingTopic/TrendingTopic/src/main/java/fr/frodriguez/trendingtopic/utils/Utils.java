@@ -18,41 +18,43 @@ import fr.frodriguez.trendingtopic.TTService;
  */
 public class Utils {
 
-    public final static String PREFIX = "flz";
+    /**
+     * Return whether the debug mode is enabled or not
+     * @return true if the debug mode is enabled, false if not
+     */
+    public static boolean isDebugEnabled() {
+        return Settings.DEBUG_ENABLED;
+    }
 
-    public final static String TWITTER_WOEID_LABELS[] = {"World", "France", "US", "UK"};
-    public final static int    TWITTER_WOEID_VALUES[] = {1, 23424819, 23424977, 23424975};
+    /**
+     * Set the debug mode
+     * @param debugEnabled true to enable the debug mode, false to disable it
+     */
+    public static void setDebugEnabled(boolean debugEnabled) {
+        Settings.DEBUG_ENABLED = debugEnabled;
+    }
 
-    public final static String  SHARED_PREFERENCES         = "fr.frodriguez.trendingtopic.lastTT";
-    public final static String  SP_TT                      = "last_tt";
-    public final static String  SP_TT_DEFAULT              = "";
-    public final static String  SP_BOOT_ENABLED            = "boot_enabled";
-    public final static boolean SP_BOOT_ENABLED_DEFAULT    = true;
-    public final static String  SP_WOEID                   = "woeid";
-    public final static int     SP_WOEID_DEFAULT           = TWITTER_WOEID_VALUES[0];
-
-    public final static int NOTIFICATION_ID = 0;
-
-    public final static String OAUTH_CONSUMER_KEY        = "Zn4nPDBCy6AQctonRzVGlAsHj";
-    public final static String OAUTH_CONSUMER_SECRET     = "nLksHtxGDQFhMVJZRoh0BiOMPkQR2Gpu4OQsFLI6HTSsvhiWGA";
-    public final static String OAUTH_ACCESS_TOKEN        = "210685890-T4AN6FbswBPSQdbxIxVa599ojhBVbOxX8AgnBppu";
-    public final static String OAUTH_ACCESS_TOKEN_SECRET = "ca51aNstTB33j7NToPtKpXWVq8SkceiwmvKZYuMSxeUtb";
-
-
-    public static boolean isServiceRunning(Context context) {
+    /**
+     * Return whether the given service is running or not
+     * @param context context
+     * @param serviceClass the service to test
+     * @return true if the service is currently running, false if not
+     */
+    public static boolean isServiceRunning(Context context, Class serviceClass) {
         ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
         for(ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-            if(TTService.class.getName().equals(service.service.getClassName())) {
+            if(serviceClass.getName().equals(service.service.getClassName())) {
                 return true;
             }
         }
         return false;
     }
 
-    public static String buildTag(String appName, String version) {
-        return PREFIX + "_" + appName + ">" + version;
-    }
-
+    /**
+     * Get the application version and the application name in a string
+     * @param context
+     * @return
+     */
     public static String getAppVersion(Context context) {
         String version = "?";
         if(context != null) {
@@ -66,13 +68,28 @@ public class Utils {
         return version;
     }
 
+    /**
+     * Get the application name
+     * @param context
+     * @return
+     */
     public static String getAppName(Context context) {
         ApplicationInfo applicationInfo = context.getApplicationInfo();
         int stringId = applicationInfo.labelRes;
         return stringId == 0 ? applicationInfo.nonLocalizedLabel.toString() : context.getString(stringId);
     }
 
-    public static  void notify(Context context, int id, int icon, String url, String title, String message, Uri sound) {
+    /**
+     * Create a notification with a browser link
+     * @param context
+     * @param notificationId id of the notification used to clear it
+     * @param icon icon for the notification
+     * @param url url to open when clicking on the notification
+     * @param title title of the notification
+     * @param message content message of the notification
+     * @param sound sound played when the notification appears
+     */
+    public static  void notify(Context context, int notificationId, int icon, String url, String title, String message, Uri sound) {
         // open the browser on the TT url
         Intent browserIntent = new Intent(Intent.ACTION_VIEW);
         browserIntent.setData(Uri.parse(url));
@@ -91,7 +108,7 @@ public class Utils {
             nBuilder.setVisibility(Notification.VISIBILITY_PUBLIC);
         }
 
-        ((NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE)).notify(id, nBuilder.build());
+        ((NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE)).notify(notificationId, nBuilder.build());
     }
 
 }
