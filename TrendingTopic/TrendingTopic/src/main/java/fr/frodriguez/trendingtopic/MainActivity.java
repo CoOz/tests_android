@@ -46,7 +46,7 @@ public class MainActivity extends Activity {
 
         // set switch values
         ((Switch) findViewById(R.id.switchDebug))
-                .setChecked(Utils.isDebugEnabled());
+                .setChecked(Utils.isDebugEnabled(this));
         ((Switch) findViewById(R.id.switchEnabled))
                 .setChecked(Utils.isServiceRunning(this, TTService.class));
         ((Switch) findViewById(R.id.switchBoot))
@@ -133,7 +133,7 @@ public class MainActivity extends Activity {
     /** Enable or disable the debug mode */
     public void onClickDebugSwitch(View view) {
         boolean enabled = ((Switch)view).isChecked();
-        Utils.setDebugEnabled(enabled);
+        Utils.setDebugEnabled(this, enabled);
         _log.d("Debug mode " + (enabled ? "enabled" : "disabled"));
     }
 

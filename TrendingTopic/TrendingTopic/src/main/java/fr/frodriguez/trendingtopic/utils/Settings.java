@@ -6,12 +6,12 @@ package fr.frodriguez.trendingtopic.utils;
 
 public class Settings {
 
-    public static boolean DEBUG_ENABLED = false;
-
     public final static String TWITTER_WOEID_LABELS[] = {"World", "France", "US", "UK"};
     public final static int    TWITTER_WOEID_VALUES[] = {1, 23424819, 23424977, 23424975};
 
     public final static String  SHARED_PREFERENCES         = "fr.frodriguez.trendingtopic.lastTT";
+    public final static String  SP_DEBUG                   = "debug";
+    public final static boolean SP_DEBUG_DEFAULT           = false;
     public final static String  SP_TT                      = "last_tt";
     public final static String  SP_TT_DEFAULT              = "";
     public final static String  SP_BOOT_ENABLED            = "boot_enabled";

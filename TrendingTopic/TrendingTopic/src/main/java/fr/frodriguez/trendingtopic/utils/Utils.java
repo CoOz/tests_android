@@ -6,6 +6,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -20,18 +21,23 @@ public class Utils {
 
     /**
      * Return whether the debug mode is enabled or not
+     * @param context
      * @return true if the debug mode is enabled, false if not
      */
-    public static boolean isDebugEnabled() {
-        return Settings.DEBUG_ENABLED;
+    public static boolean isDebugEnabled(Context context) {
+        SharedPreferences sp = context.getSharedPreferences(Settings.SHARED_PREFERENCES, Context.MODE_PRIVATE);
+        return sp.getBoolean(Settings.SP_DEBUG, Settings.SP_DEBUG_DEFAULT);
     }
 
     /**
      * Set the debug mode
+     * @param context
      * @param debugEnabled true to enable the debug mode, false to disable it
      */
-    public static void setDebugEnabled(boolean debugEnabled) {
-        Settings.DEBUG_ENABLED = debugEnabled;
+    public static void setDebugEnabled(Context context, boolean debugEnabled) {
+        SharedPreferences.Editor spe = context.getSharedPreferences(Settings.SHARED_PREFERENCES, Context.MODE_PRIVATE).edit();
+        spe.putBoolean(Settings.SP_DEBUG, debugEnabled);
+        spe.apply();
     }
 
     /**
